@@ -22,79 +22,30 @@
  * SOFTWARE.
  */
 
-import java.time.LocalDate
-import java.time.Month.MAY
-
-data class Person(val firstName: String, val lastName: String, val dob: LocalDate, val email: String)
-
-open class Machine {
-
-    init {
-        start()
-    }
-
-    private fun start() {
-        println("Running the machine!")
-    }
-}
-
-enum class Operation(val symbol: String) {
-    ADD("+"),
-    SUBTRACT("-"),
-    MULTIPLY("*"),
-    DIVIDE("/")
-}
-
-data class OperationRequest<E : Number>(val operand1: E, val operand2: E, val operation: Operation) {
-    override fun toString(): String {
-        return "$operand1 ${operation.symbol} $operand2"
-    }
-}
-
-class Calculator<E : Number>(val person: Person, val operationRequest: OperationRequest<E>) : Machine() {
-
-    init {
-        greet()
-    }
-
-    private fun greet() {
-        println("Hello ${person.firstName} ${person.lastName}")
-        println("You requested $operationRequest")
-    }
-
-    fun calculate(): E {
-        return when (operationRequest.operation) {
-            Operation.ADD -> add()
-            Operation.SUBTRACT -> subtract()
-            Operation.MULTIPLY -> multiply()
-            Operation.DIVIDE -> divide()
-        }
-    }
-
-    private fun divide(): E {
-        return (operationRequest.operand1.toFloat() / operationRequest.operand2.toFloat()) as E
-    }
-
-    private fun multiply(): E {
-        return (operationRequest.operand1.toFloat() * operationRequest.operand2.toFloat()) as E
-    }
-
-    private fun subtract(): E {
-        return (operationRequest.operand1.toFloat() - operationRequest.operand2.toFloat()) as E
-    }
-
-    private fun add(): E {
-        return (operationRequest.operand1.toFloat() + operationRequest.operand2.toFloat()) as E
-    }
-}
-
 fun main(args: Array<String>) {
-    val person = Person("Jorge", "Garcia", LocalDate.of(1982, MAY, 12),
-        "mr-george@georgethepenguin.dev")
+    if (args.isEmpty()) {
+        printOptions()
+        return
+    }
 
-    val operationRequest = OperationRequest(1.0, 2.0, Operation.ADD)
+    val name = args[0]
+    val isCalculator = name.equals("Calculator", ignoreCase = true)
+    val isLanguages = name.equals("Languages", ignoreCase = true)
+    if (!isCalculator && !isLanguages) {
+        printOptions()
+        return
+    }
 
-    val calculator = Calculator(person, operationRequest)
-    val result = calculator.calculate()
-    print("Result: $result")
+    if (isCalculator) {
+        startCalculator()
+        return
+    }
+
+    startLanguages()
+}
+
+private fun printOptions() {
+    println("Please provide a name:")
+    println("Calculator")
+    println("Languages")
 }
